@@ -16,8 +16,21 @@ variable "eks_version" {
   default     = "1.28"
 }
 
+# variable "managed_node_groups" {
+#   type = map(string)
+
+#   default = {
+#     name           = "node-group-1"
+#     instance_types = ["t3.small"]
+#     min_size       = 1
+#     max_size       = 3
+#     desired_size   = 2
+#   }
+# }
+
 
 variable "eks_addon" {
+  description = "Desire witch EKS addons you will have enabled."
   type = object({
     ebs_csi = object({
       version = string
@@ -65,20 +78,29 @@ variable "eks_addon" {
   }
 }
 
-
 # VPC Settings
-variable "vpc_id" {
-  description = "VPC ID"
+variable "vpc_create" {
+  description = "Allow VPC to been created or use already exists VPC."
+  type        = bool
+  default     = true
+}
+variable "vpc_name" {
+  description = "Name of the VPC"
   type        = string
-  default     = ""
+  default     = "education-vpc"
 }
 variable "vpc_cidr" {
-  description = "VPC CIDR"
+  description = "VPC CIDR range"
   type        = string
   default     = "10.0.0.0/16"
 }
-variable "vpc_name" {
-  description = "VPC Name"
-  type        = string
-  default     = "education-vpc"
+variable "vpc_private_subnets" {
+  description = "Private subnet range, count of entry shoud be equest with azs size, default: 3"
+  type        = list(string)
+  default     = ["10.0.1.0/24", "10.0.2.0/24", "10.0.3.0/24"]
+}
+variable "vpc_public_subnets" {
+  description = "Public subnet range, count of entry shoud be equest with azs size, default: 3"
+  type        = list(string)
+  default     = ["10.0.4.0/24", "10.0.5.0/24", "10.0.6.0/24"]
 }
