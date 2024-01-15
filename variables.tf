@@ -78,30 +78,34 @@ variable "eks_addon" {
   }
 }
 
-variable "eks_vpc" {
-  description = "Control your VPC network, create a new VPC if needed or use a exisiting VPC"
-  type = object({
-    create  = bool
-    id      = string
-    name    = string
-    cidr    = string
-    max_azs = number
-    subnets = object({
-      private = list(string)
-      public  = list(string)
-    })
-  })
-
-  default = {
-    create  = true
-    id      = ""
-    name    = "education-vpc"
-    cidr    = "10.0.0.0/16"
-    max_azs = 3
-
-    subnets = {
-      private = ["10.0.1.0/24", "10.0.2.0/24", "10.0.3.0/24"]
-      public  = ["10.0.4.0/24", "10.0.5.0/24", "10.0.6.0/24"]
-    }
-  }
+# VPC Settings
+variable "vpc_create" {
+  description = "Allow VPC to been created or use already exists VPC."
+  type        = bool
+  default     = true
+}
+variable "vpc_name" {
+  description = "Name of the VPC"
+  type        = string
+  default     = "education-vpc"
+}
+variable "vpc_cidr" {
+  description = "VPC CIDR range"
+  type        = string
+  default     = "10.0.0.0/16"
+}
+variable "vpc_max_azs" {
+  description = "VPC Maximum AZ"
+  type        = number
+  default     = 1
+}
+variable "vpc_private_subnets" {
+  description = "Private subnet range, count of entry shoud be equest with vpc_asz size"
+  type        = list(string)
+  default     = ["10.0.1.0/24", "10.0.2.0/24", "10.0.3.0/24"]
+}
+variable "vpc_public_subnets" {
+  description = "Public subnet range, count of entry shoud be equest with vpc_asz size"
+  type        = list(string)
+  default     = ["10.0.4.0/24", "10.0.5.0/24", "10.0.6.0/24"]
 }
