@@ -16,8 +16,21 @@ variable "eks_version" {
   default     = "1.28"
 }
 
+# variable "managed_node_groups" {
+#   type = map(string)
+
+#   default = {
+#     name           = "node-group-1"
+#     instance_types = ["t3.small"]
+#     min_size       = 1
+#     max_size       = 3
+#     desired_size   = 2
+#   }
+# }
+
 
 variable "eks_addon" {
+  description = "Desire witch EKS addons you will have enabled."
   type = object({
     ebs_csi = object({
       version = string
@@ -65,20 +78,30 @@ variable "eks_addon" {
   }
 }
 
+variable "eks_vpc" {
+  description = "Control your VPC network, create a new VPC if needed or use a exisiting VPC"
+  type = object({
+    create  = bool
+    id      = string
+    name    = string
+    cidr    = string
+    max_azs = number
+    subnets = object({
+      private = list(string)
+      public  = list(string)
+    })
+  })
 
-# VPC Settings
-variable "vpc_id" {
-  description = "VPC ID"
-  type        = string
-  default     = ""
-}
-variable "vpc_cidr" {
-  description = "VPC CIDR"
-  type        = string
-  default     = "10.0.0.0/16"
-}
-variable "vpc_name" {
-  description = "VPC Name"
-  type        = string
-  default     = "education-vpc"
+  default = {
+    create  = true
+    id      = ""
+    name    = "education-vpc"
+    cidr    = "10.0.0.0/16"
+    max_azs = 3
+
+    subnets = {
+      private = ["10.0.1.0/24", "10.0.2.0/24", "10.0.3.0/24"]
+      public  = ["10.0.4.0/24", "10.0.5.0/24", "10.0.6.0/24"]
+    }
+  }
 }
